@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  mgdockerblazorapp:
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    image: ${DOCKER_REGISTRY-}mgdockerblazorapp
+    ports:
+      - "80:8080"
+    build:
+      context: .
+      dockerfile: MGDockerBlazorApp/MGDockerBlazorApp/Dockerfile   
+  postgres:
+    restart: always
+    image: postgres:14-alpine
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: 'MGDatabase'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'

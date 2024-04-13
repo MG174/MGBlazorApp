@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGDockerBlazorApp", "MGDockerBlazorApp\MGDockerBlazorApp\MGDockerBlazorApp.csproj", "{CCAB5F80-255D-4B50-B51E-4256872F35A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGDockerBlazorApp", "MGDockerBlazorApp\MGDockerBlazorApp\MGDockerBlazorApp.csproj", "{CCAB5F80-255D-4B50-B51E-4256872F35A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGDockerBlazorApp.Client", "MGDockerBlazorApp\MGDockerBlazorApp.Client\MGDockerBlazorApp.Client.csproj", "{C26A7F89-6986-45E9-BF85-D46933BD0884}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGDockerBlazorApp.Client", "MGDockerBlazorApp\MGDockerBlazorApp.Client\MGDockerBlazorApp.Client.csproj", "{C26A7F89-6986-45E9-BF85-D46933BD0884}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FFF720F6-AB18-4157-88E9-C67BD486ABE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C26A7F89-6986-45E9-BF85-D46933BD0884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C26A7F89-6986-45E9-BF85-D46933BD0884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C26A7F89-6986-45E9-BF85-D46933BD0884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFF720F6-AB18-4157-88E9-C67BD486ABE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF720F6-AB18-4157-88E9-C67BD486ABE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFF720F6-AB18-4157-88E9-C67BD486ABE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFF720F6-AB18-4157-88E9-C67BD486ABE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
