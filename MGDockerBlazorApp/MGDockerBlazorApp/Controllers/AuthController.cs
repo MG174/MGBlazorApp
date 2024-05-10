@@ -1,6 +1,8 @@
-﻿using MGDockerBlazorApp.Database;
+﻿using MGDockerBlazorApp.Client.Models;
+using MGDockerBlazorApp.Database;
 using MGDockerBlazorApp.Database.DatabaseModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Dynamic;
@@ -10,25 +12,32 @@ using System.Text;
 namespace MGDockerBlazorApp.Controllers
 {
     [ApiController]
+    [IgnoreAntiforgeryToken]
     [Route("api/[controller]/[action]")]
     public class AuthController : ControllerBase
     {
         private readonly MGDatabaseContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
         private IConfiguration _config;
 
-        public AuthController(MGDatabaseContext dbContext, IConfiguration config)
+        public AuthController(MGDatabaseContext dbContext, IConfiguration config, UserManager<ApplicationUser> userManager)
         {
             _dbContext = dbContext;
             _config = config;
+            _userManager = userManager;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string login)
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
-            var user = AuthenticateUser(login);
+            var authenticated = await AuthenticateUser(userLoginDto.Email, userLoginDto.Password);
             IActionResult response = Unauthorized();
-            var tokenString = GenerateJSONWebToken();
-            response = Ok(new { token = tokenString });
+
+            if (authenticated) 
+            {
+                var tokenString = GenerateJSONWebToken();
+                response = Ok(new { token = tokenString });
+            }
 
             return response;
         }
@@ -47,15 +56,12 @@ namespace MGDockerBlazorApp.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private dynamic AuthenticateUser(string login)
+        private async Task<bool> AuthenticateUser(string email, string password)
         {
-            dynamic user = null;
+            var user = await _userManager.FindByEmailAsync(email);
+            var passwordCorrect = await _userManager.CheckPasswordAsync(user, password);
 
-            if (login == "test")
-            {
-                user = new { Username = "Maciej", EmailAddress = "maciej.test@gmail.com" };
-            }
-            return user;
+            return passwordCorrect;
         }
     }
 }

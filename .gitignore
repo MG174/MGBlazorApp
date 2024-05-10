@@ -31,3 +31,4 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 /MGDockerBlazorApp/MGDockerBlazorApp/appsettings.Development.json
+/MGDockerBlazorApp/MGDockerBlazorApp/appsettings.Release.json

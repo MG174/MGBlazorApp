@@ -5,22 +5,23 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.Swagger;
+using Microsoft.AspNetCore.Identity;
+using MGDockerBlazorApp.Database.DatabaseModels;
+using Radzen;
+using Blazored.LocalStorage;
+using MGDockerBlazorApp.Client.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveWebAssemblyComponents();
+builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 ConfigurationManager configuration = builder.Configuration;
 
-builder.Services.AddDbContext<MGDatabaseContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-
-//builder.Services.AddAuthentication();
+builder.Services.AddDbContext<MGDatabaseContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentityCore<ApplicationUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<MGDatabaseContext>();
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddControllers();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api Key Auth", Version = "v1" });
@@ -47,6 +48,13 @@ builder.Services.AddSwaggerGen(c =>
                     };
     c.AddSecurityRequirement(requirement);
 });
+builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, BlazorAuthorizationMiddlewareResultHandler>();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddRadzenComponents();
+builder.Services.AddAntiforgery();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -65,7 +73,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -73,7 +80,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -82,14 +88,21 @@ await using var dbContext = scope.ServiceProvider.GetRequiredService<MGDatabaseC
 await dbContext.Database.MigrateAsync();
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+//app.UseRouting();
+//app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+//app.UseAuthentication();
+//app.UseAuthorization();
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllers();
+//});
 
 app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(MGDockerBlazorApp.Client._Imports).Assembly);
