@@ -4,6 +4,7 @@ using MGDockerBlazorApp.Database.DatabaseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Dynamic;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +14,7 @@ namespace MGDockerBlazorApp.Controllers
 {
     [ApiController]
     [IgnoreAntiforgeryToken]
+    [AllowAnonymous]
     [Route("api/[controller]/[action]")]
     public class AuthController : ControllerBase
     {
@@ -28,6 +30,7 @@ namespace MGDockerBlazorApp.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
             var authenticated = await AuthenticateUser(userLoginDto.Email, userLoginDto.Password);
@@ -35,6 +38,27 @@ namespace MGDockerBlazorApp.Controllers
 
             if (authenticated) 
             {
+                var tokenString = GenerateJSONWebToken();
+                response = Ok(new { token = tokenString });
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(UserChangePasswordDto userLoginDto)
+        {
+            var authenticated = await AuthenticateUser(userLoginDto.Email, userLoginDto.PreviousPassword);
+            IActionResult response = Unauthorized();
+
+            if (authenticated)
+            {
+                var user = await _userManager.FindByEmailAsync(userLoginDto.Email);
+                var result = await _userManager.ChangePasswordAsync(user, userLoginDto.PreviousPassword, userLoginDto.NewPassword);
+
+                if (!result.Succeeded) throw new Exception(result.Errors.ToString());
+
+                await _dbContext.SaveChangesAsync();
                 var tokenString = GenerateJSONWebToken();
                 response = Ok(new { token = tokenString });
             }

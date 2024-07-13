@@ -1,0 +1,25 @@
+﻿@using Blazored.LocalStorage
+@using MGDockerBlazorApp.Client.Authentication
+@using MGDockerBlazorApp.Client.Layout
+@using MGDockerBlazorApp.Client.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@inject HttpClient Http
+@inject ILocalStorageService LocalStorage
+@inject IConfiguration Configuration
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
+@attribute [AllowAnonymous]
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    { 
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (state.User.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
+        NavigationManager.NavigateTo($"/login");
+    }
+}

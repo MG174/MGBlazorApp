@@ -1,5 +1,6 @@
 @using MGDockerBlazorApp.Client.ActivePage
 @using MGDockerBlazorApp.Client.Layout
+@using MGDockerBlazorApp.Client.Pages
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
 
@@ -8,25 +9,18 @@
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <Authorizing>
-                    <text>Please wait, we are authorizing you...</text>
+                    <span>Your spinner goes here</span>
                 </Authorizing>
             <NotAuthorized>
-                    @if (context.User.Identity.IsAuthenticated == false)
-                    {
-                        <RedirectToLogin />
-                    }
-                    else
-                    {
-                        <p>You are not authorized to access this resource.</p>
-                    }
+                    <RedirectToLogin />
             </NotAuthorized>
         </AuthorizeRouteView>
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+            <LayoutView Layout="@typeof(NonAuthorizedLayout)">
+                <Loading />
             </LayoutView>
         </NotFound>
     </Router>

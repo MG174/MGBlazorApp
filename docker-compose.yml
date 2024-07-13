@@ -1,9 +1,29 @@
 version: '3.4'
 
 services:
+  postgres:
+    restart: always
+    image: postgres:14.12
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: 'MGDatabaseProd'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+    networks:
+      - postgres-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
   mgdockerblazorapp:
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+      - ASPNETCORE_HTTP_PORTS=8080
     links:
       - postgres
     image: ${DOCKER_REGISTRY-}mgdockerblazorapp
@@ -11,13 +31,9 @@ services:
       - "80:8080"
     build:
       context: .
-      dockerfile: MGDockerBlazorApp/MGDockerBlazorApp/Dockerfile   
-  postgres:
-    restart: always
-    image: postgres:14-alpine
-    volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: 'MGDatabase'
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'postgres'
+      dockerfile: MGDockerBlazorApp/MGDockerBlazorApp/Dockerfile
+    networks:
+      - postgres-network
+networks:
+  postgres-network:
+    driver: bridge

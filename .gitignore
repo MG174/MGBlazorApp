@@ -32,3 +32,4 @@ msbuild.wrn
 .vs/
 /MGDockerBlazorApp/MGDockerBlazorApp/appsettings.Development.json
 /MGDockerBlazorApp/MGDockerBlazorApp/appsettings.Release.json
+/packages

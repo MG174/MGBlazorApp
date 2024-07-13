@@ -13,6 +13,7 @@ namespace MGDockerBlazorApp.Database
         public MGDatabaseContext(DbContextOptions<MGDatabaseContext> options)
         : base(options)
         {
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,11 +26,12 @@ namespace MGDockerBlazorApp.Database
                 {
                     Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                     UserName = "admin",
-                    NormalizedUserName = "admin",
+                    NormalizedUserName = "ADMIN",
                     Email = "admin@admin.com",
+                    NormalizedEmail = "ADMIN@ADMIN.COM",
                     FirstName = "admin",
                     LastName = "admin",
-                    PasswordHash = hasher.HashPassword(null, "3P7PTIuEkhpkiSmmACzr")
+                    PasswordHash = hasher.HashPassword(null, "3P7PTIuEkhpkiSmmACzry")
                 }
             );
 

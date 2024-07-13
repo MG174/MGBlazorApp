@@ -1,0 +1,24 @@
+﻿@page "/logout"
+@using Blazored.LocalStorage
+@using MGDockerBlazorApp.Client.Authentication
+@using MGDockerBlazorApp.Client.Layout
+@using MGDockerBlazorApp.Client.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@inject HttpClient Http
+@inject ILocalStorageService LocalStorage
+@inject IConfiguration Configuration
+@inject NotificationService NotificationService
+@inject NavigationManager navigationManager
+@attribute [AllowAnonymous]
+@layout NonAuthorizedLayout
+
+@code {
+    UserLoginDto user = new UserLoginDto();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await LocalStorage.RemoveItemAsync("token");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        navigationManager.NavigateTo("/login");
+    }
+}

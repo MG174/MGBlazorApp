@@ -27,6 +27,7 @@ namespace MGDockerBlazorApp.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetData()
         {

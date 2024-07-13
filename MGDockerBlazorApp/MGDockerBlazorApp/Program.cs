@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using MGDockerBlazorApp.Database.DatabaseModels;
 using Radzen;
 using Blazored.LocalStorage;
-using MGDockerBlazorApp.Client.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using MGDockerBlazorApp.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +18,33 @@ builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 ConfigurationManager configuration = builder.Configuration;
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddDbContext<MGDatabaseContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentityCore<ApplicationUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<MGDatabaseContext>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddControllers();
+builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, BlazorAuthorizationMiddlewareResultHandler>();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
+builder.Services.AddRadzenComponents();
+builder.Services.AddAntiforgery();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = configuration["Jwt:Issuer"],
+            ValidAudience = configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+        };
+    });
+builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api Key Auth", Version = "v1" });
@@ -48,28 +71,6 @@ builder.Services.AddSwaggerGen(c =>
                     };
     c.AddSecurityRequirement(requirement);
 });
-builder.Services.AddAuthorization();
-builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, BlazorAuthorizationMiddlewareResultHandler>();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddHttpClient();
-builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddRadzenComponents();
-builder.Services.AddAntiforgery();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = configuration["Jwt:Issuer"],
-            ValidAudience = configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
-        };
-    });
 
 var app = builder.Build();
 
@@ -84,27 +85,23 @@ else
 }
 
 using var scope = app.Services.CreateScope();
-await using var dbContext = scope.ServiceProvider.GetRequiredService<MGDatabaseContext>();
-await dbContext.Database.MigrateAsync();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-//app.UseRouting();
-//app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-//app.UseAuthentication();
-//app.UseAuthorization();
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapControllers();
-//});
+app.UseAuthentication();
+app.UseMvc();
+app.UseAuthorization();
 
-app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.MapControllers();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(MGDockerBlazorApp.Client._Imports).Assembly);
+
+scope.ServiceProvider.GetRequiredService<MGDatabaseContext>().Database.Migrate();
 
 app.Run();

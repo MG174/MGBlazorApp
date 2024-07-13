@@ -3,6 +3,7 @@ using System;
 using MGDockerBlazorApp.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MGDockerBlazorApp.Migrations
 {
     [DbContext(typeof(MGDatabaseContext))]
-    partial class MGDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240604171427_ChangePasswordUser")]
+    partial class ChangePasswordUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,14 +283,14 @@ namespace MGDockerBlazorApp.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "895ca12c-05ad-4661-9741-7ba87bddb4b8",
+                            ConcurrencyStamp = "73ccda7b-de44-47ff-ab15-5bab75e479cd",
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMbGf0lnOi65gUFHmOOBZRsWtveXZQZFe5YFDIF3QXuKDnJKD9/moT107YG+RYlcgQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECk7NEnyModaACed6FlZ/QkAwYuxElBaHSp1rQujd1da2vosO8I7zRGC6jmQ9Q0qNw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8e1f7086-f3f4-4b05-ac40-728b38c3d5b8",
+                            SecurityStamp = "7a7cf711-d00c-4441-a161-34491364483d",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FirstName = "admin",

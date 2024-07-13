@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using Blazored.LocalStorage
 @using MGDockerBlazorApp.Client.Authentication
+@using MGDockerBlazorApp.Client.Layout
 @using MGDockerBlazorApp.Client.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @inject HttpClient Http
@@ -9,6 +10,7 @@
 @inject NotificationService NotificationService
 @inject NavigationManager navigationManager
 @attribute [AllowAnonymous]
+@layout NonAuthorizedLayout
 
 <RadzenRow Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 800px; overflow: hidden;">
     <RadzenColumn Size="12" SizeMD="6">
@@ -44,9 +46,10 @@
 
             if (result.IsSuccessStatusCode)
             {
-                var token = await result.Content.ReadAsStringAsync();
+                var token = await result.Content.ReadFromJsonAsync<dynamic>();
                 await LocalStorage.SetItemAsync("token", token);
                 await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                ((CustomAuthenticationStateProvider)AuthenticationStateProvider).SetUserAuthenticated(user.Email);
                 navigationManager.NavigateTo("/");
                 return;
             }
