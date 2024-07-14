@@ -1,6 +1,6 @@
-﻿namespace MGDockerBlazorApp.Client.Models
+﻿namespace MGDockerBlazorApp.Client.Models.Authentication
 {
-    public class UserChangePasswordDto
+    public class UserChangePassword
     {
         public string Email { get; set; }
         public string PreviousPassword { get; set; }

@@ -2,9 +2,20 @@
 {
     public class AuthenticationService
     {
-        public AuthenticationService(HttpClient Http)
+        private readonly HttpClient _httpClient;
+        public AuthenticationService(HttpClient httpClient)
         {
-                
+            _httpClient = httpClient;
+        }
+
+        public async Task LoginUser() 
+        { 
+
+        }
+
+        public async Task ChangePassword()
+        {
+
         }
     }
 }

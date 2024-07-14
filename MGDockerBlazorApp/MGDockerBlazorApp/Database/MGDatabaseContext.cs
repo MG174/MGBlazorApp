@@ -1,4 +1,5 @@
-﻿using MGDockerBlazorApp.Database.DatabaseModels;
+﻿using MgDockerBlazorApp.Models.Models.Authentication;
+using MgDockerBlazorApp.Models.Models.Test;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ namespace MGDockerBlazorApp.Database
                     NormalizedEmail = "ADMIN@ADMIN.COM",
                     FirstName = "admin",
                     LastName = "admin",
-                    PasswordHash = hasher.HashPassword(null, "3P7PTIuEkhpkiSmmACzry")
+                    PasswordHash = hasher.HashPassword(null, "3P7PTIuEkhpkiSmmACzryt")
                 }
             );
 

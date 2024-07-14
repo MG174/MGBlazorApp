@@ -6,11 +6,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Identity;
-using MGDockerBlazorApp.Database.DatabaseModels;
 using Radzen;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authorization;
 using MGDockerBlazorApp.Middleware;
+using MGDockerBlazorApp.Application;
+using MgDockerBlazorApp.Models.Models.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddApplication();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api Key Auth", Version = "v1" });

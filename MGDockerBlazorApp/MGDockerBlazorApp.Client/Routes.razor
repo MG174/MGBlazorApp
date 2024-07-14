@@ -1,6 +1,7 @@
-@using MGDockerBlazorApp.Client.ActivePage
 @using MGDockerBlazorApp.Client.Layout
+@using MGDockerBlazorApp.Client.Layout.ActivePage
 @using MGDockerBlazorApp.Client.Pages
+@using MGDockerBlazorApp.Client.Pages.Utilities
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
 
@@ -9,7 +10,7 @@
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <Authorizing>
-                    <span>Your spinner goes here</span>
+                    <Loading></Loading>
                 </Authorizing>
             <NotAuthorized>
                     <RedirectToLogin />

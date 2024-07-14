@@ -11,8 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\MGDockerBlazorApp.Application\MGDockerBlazorApp.Application.csproj" />
+    <ProjectReference Include="..\..\..\MGDockerBlazorApp.ClientModels\MGDockerBlazorApp.ClientModels.csproj" />
+    <ProjectReference Include="..\..\..\MgDockerBlazorApp.Models\MgDockerBlazorApp.Models.csproj" />
     <ProjectReference Include="..\MGDockerBlazorApp.Client\MGDockerBlazorApp.Client.csproj" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="MediatR" Version="12.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.4" />
